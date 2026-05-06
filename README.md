@@ -1,36 +1,36 @@
-# Front-End Test - Mini E-commerce SPA
+# Mini E-commerce SPA
 
-This repository contains the initial setup for a mini e-commerce SPA with:
+Client-server monorepo for the front-end technical test:
 
-- React + TypeScript (Vite) for the client
-- Tailwind CSS v4 + shadcn/ui for UI
-- Express for the API server
+- `client`: React + TypeScript + Vite
+- `server`: Express API serving `products.json`
+- Styling: Tailwind CSS v4 + shadcn/ui components
 
-## Project Setup
+## Setup
 
 ### Requirements
 
 - Node.js `>= 20`
 - npm `>= 10`
 
-### Install Dependencies
+### Install
 
-From the project root:
+From the repository root:
 
 ```bash
 npm install
 ```
 
-### Run the Project
+### Start (Client + Server)
 
 ```bash
 npm run start
 ```
 
-This starts both apps in parallel:
+This runs both workspaces in parallel:
 
-- Client (Vite): `http://localhost:5173`
-- Server (Express): `http://localhost:3000`
+- Client: `http://localhost:5173`
+- API server: `http://localhost:3000`
 
 ### Build
 
@@ -46,7 +46,7 @@ Builds the client for production.
 npm run test
 ```
 
-Runs tests in all workspaces.
+Runs workspace tests (`client` + `server` when available).
 
 ### Lint
 
@@ -54,7 +54,14 @@ Runs tests in all workspaces.
 npm run lint
 ```
 
-Runs lint checks in all workspaces.
+Runs linting in all workspaces.
+
+## NPM Scripts (Root)
+
+- `start`: run client and server together
+- `build`: production build (client)
+- `test`: run tests in workspaces
+- `lint`: run lint in workspaces
 
 ## Project Structure
 
@@ -63,24 +70,40 @@ root/
 ├── client/
 │   ├── src/
 │   │   ├── components/
+│   │   │   ├── layout/
+│   │   │   ├── product/
+│   │   │   └── ui/
+│   │   ├── hooks/
+│   │   ├── lib/
 │   │   ├── pages/
 │   │   │   ├── PLP/
 │   │   │   └── PDP/
 │   │   ├── services/
 │   │   ├── store/
-│   │   ├── hooks/
+│   │   ├── test/
 │   │   ├── App.tsx
 │   │   └── main.tsx
-│   ├── components.json
 │   ├── package.json
-│   └── vite.config.ts
+│   └── components.json
 ├── server/
-│   ├── index.js
 │   ├── routes/
 │   │   ├── product.js
 │   │   └── cart.js
+│   ├── index.js
 │   └── package.json
 ├── products.json
 ├── package.json
 └── README.md
 ```
+
+## API Summary
+
+- `GET /api/product` -> product list
+- `GET /api/product/:id` -> product detail
+- `POST /api/cart` -> accepts `{ id, size, total }`, returns `{ count }`
+
+## Notes
+
+- Pure SPA (client-side routing, no SSR).
+- Cart count is persisted client-side.
+- Product list/detail requests use local cache with 1-hour TTL.
