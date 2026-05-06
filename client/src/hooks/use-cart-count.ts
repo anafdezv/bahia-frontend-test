@@ -31,10 +31,13 @@ export function useCartCount() {
     };
   }, []);
 
-  const setCount = (nextCount: number) => {
-    const normalized = nextCount < 0 ? 0 : nextCount;
-    setCountState(normalized);
-    setStoredCartCount(normalized);
+  const setCount = (nextCount: number | ((current: number) => number)) => {
+    setCountState((currentCount) => {
+      const resolvedCount = typeof nextCount === "function" ? nextCount(currentCount) : nextCount;
+      const normalized = resolvedCount < 0 ? 0 : resolvedCount;
+      setStoredCartCount(normalized);
+      return normalized;
+    });
   };
 
   return { count, setCount };

@@ -17,6 +17,10 @@ export function setStoredCartCount(count: number) {
     return;
   }
 
-  window.localStorage.setItem(CART_STORAGE_KEY, String(count));
-  window.dispatchEvent(new CustomEvent<number>(CART_COUNT_SYNC_EVENT, { detail: count }));
+  try {
+    window.localStorage.setItem(CART_STORAGE_KEY, String(count));
+    window.dispatchEvent(new CustomEvent<number>(CART_COUNT_SYNC_EVENT, { detail: count }));
+  } catch {
+    // Ignore storage write failures to avoid breaking UI flow.
+  }
 }

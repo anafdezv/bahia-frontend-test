@@ -130,7 +130,7 @@ export default function PDPPage() {
       };
       const response = await addToCart(payload);
 
-      setCount(response.count);
+      setCount((currentCount) => currentCount + response.count);
       setAddSuccess("Producto añadido al carrito.");
     } catch (submitError) {
       setAddError(submitError instanceof Error ? submitError.message : "No se pudo añadir el producto.");
@@ -193,7 +193,7 @@ export default function PDPPage() {
           />
         </button>
         <div className="grid grid-cols-4 gap-3 sm:grid-cols-5 lg:flex-none">
-          {media.map((mediaUrl) => (
+          {media.map((mediaUrl, index) => (
             <button
               key={mediaUrl}
               type="button"
@@ -205,7 +205,8 @@ export default function PDPPage() {
               className={`aspect-square w-full overflow-hidden bg-[#f2f2f2] ${
                 activeImage === mediaUrl ? "border-2 border-black" : "border border-[#e3e3e3]"
               }`}
-              aria-label="Seleccionar imagen del producto"
+              aria-label={`Seleccionar imagen ${index + 1} de ${media.length} de ${product.name}`}
+              aria-pressed={activeImage === mediaUrl}
             >
               <img src={mediaUrl} alt={`${product.name} thumbnail`} className="h-full w-full object-cover" />
             </button>

@@ -46,5 +46,9 @@ export function writeWithTimestamp<T>(key: string, data: T) {
     timestamp: Date.now()
   };
 
-  window.localStorage.setItem(key, JSON.stringify(payload));
+  try {
+    window.localStorage.setItem(key, JSON.stringify(payload));
+  } catch {
+    // Ignore storage write failures (quota/private mode/policy).
+  }
 }
