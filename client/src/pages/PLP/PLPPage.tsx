@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getErrorMessage } from "@/services/api";
 import { getProducts } from "@/services/products";
 import type { Product } from "@/types/product";
 
@@ -51,7 +52,7 @@ export default function PLPPage() {
         }
       } catch (loadError) {
         if (mounted) {
-          setError(loadError instanceof Error ? loadError.message : "Unexpected error");
+          setError(getErrorMessage(loadError, "No se pudieron cargar los productos."));
         }
       } finally {
         if (mounted) {
