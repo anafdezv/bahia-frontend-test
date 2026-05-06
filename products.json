@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "reference": "REF001",
+    "name": "Basic Tee",
+    "description": "Camiseta básica de algodón.",
+    "mediaUrl": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
+    "otherMediaUrl": [
+      "https://images.unsplash.com/photo-1512436991641-6745cdb1723f",
+      "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f"
+    ],
+    "sizes": ["S", "M", "L"],
+    "price": 1999
+  },
+  {
+    "id": 2,
+    "reference": "REF002",
+    "name": "Denim Jacket",
+    "description": "Chaqueta vaquera clásica.",
+    "mediaUrl": "https://images.unsplash.com/photo-1542272604-787c3835535d",
+    "otherMediaUrl": [
+      "https://images.unsplash.com/photo-1445205170230-053b83016050"
+    ],
+    "sizes": ["M", "L", "XL"],
+    "price": 6599
+  }
+]

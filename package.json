@@ -1,0 +1,21 @@
+{
+  "name": "bahia-frontend-test",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "start": "concurrently -k -n CLIENT,SERVER -c green,blue \"npm run start --workspace client\" \"npm run start --workspace server\"",
+    "build": "npm run build --workspace client",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
