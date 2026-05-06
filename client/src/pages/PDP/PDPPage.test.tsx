@@ -1,11 +1,16 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import PDPPage from "@/pages/PDP/PDPPage";
 
 describe("PDPPage", () => {
+  beforeEach(() => {
+    window.localStorage.clear();
+    vi.restoreAllMocks();
+  });
+
   it("renders product details from API", async () => {
     vi.spyOn(global, "fetch").mockResolvedValue({
       ok: true,
