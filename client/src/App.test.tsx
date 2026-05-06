@@ -17,7 +17,7 @@ describe("App", () => {
       </MemoryRouter>
     );
 
-    expect(await screen.findByText("Product List")).toBeInTheDocument();
+    expect(await screen.findByText("Listado de productos")).toBeInTheDocument();
     expect(screen.getByText("Bahia Store")).toBeInTheDocument();
   });
 });

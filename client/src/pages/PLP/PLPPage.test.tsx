@@ -63,7 +63,7 @@ describe("PLPPage", () => {
 
     await screen.findByText("Basic Tee");
 
-    const searchInput = screen.getByRole("textbox", { name: /search products/i });
+    const searchInput = screen.getByRole("textbox", { name: /buscar productos/i });
     await userEvent.type(searchInput, "denim");
 
     expect(screen.queryByText("Basic Tee")).not.toBeInTheDocument();

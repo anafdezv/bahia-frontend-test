@@ -1,4 +1,5 @@
 export const CART_STORAGE_KEY = "bahia:cart:count";
+export const CART_COUNT_SYNC_EVENT = "bahia:cart-count-sync";
 
 export function getStoredCartCount() {
   if (typeof window === "undefined") {
@@ -17,4 +18,5 @@ export function setStoredCartCount(count: number) {
   }
 
   window.localStorage.setItem(CART_STORAGE_KEY, String(count));
+  window.dispatchEvent(new CustomEvent<number>(CART_COUNT_SYNC_EVENT, { detail: count }));
 }

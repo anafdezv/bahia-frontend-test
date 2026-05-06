@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
 
@@ -32,5 +33,62 @@ describe("PDPPage", () => {
     expect(screen.getByText("REF010")).toBeInTheDocument();
     expect(screen.getByText("Vestido de tirantes con espalda descubierta")).toBeInTheDocument();
     expect(screen.getByText(/29,99/)).toBeInTheDocument();
+  });
+
+  it("submits add-to-cart with selected size and quantity", async () => {
+    const fetchMock = vi
+      .spyOn(global, "fetch")
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          id: 10,
+          reference: "REF010",
+          name: "Vestido Mini",
+          description: "Vestido de tirantes con espalda descubierta",
+          mediaUrl: "https://example.com/1.jpg",
+          otherMediaUrl: ["https://example.com/2.jpg"],
+          sizes: ["S", "M"],
+          price: 2999
+        })
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ count: 2 })
+      } as Response);
+
+    render(
+      <MemoryRouter initialEntries={["/products/10"]}>
+        <Routes>
+          <Route path="/products/:id" element={<PDPPage />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await screen.findByText("Vestido Mini");
+
+    const user = userEvent.setup();
+    const comboBoxes = screen.getAllByRole("combobox");
+
+    await user.click(comboBoxes[0]);
+    await user.click(screen.getByRole("option", { name: "M" }));
+
+    await user.click(comboBoxes[1]);
+    await user.click(screen.getByRole("option", { name: "2" }));
+
+    await user.click(screen.getByRole("button", { name: "Añadir" }));
+
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      2,
+      "/api/cart",
+      expect.objectContaining({
+        method: "POST",
+        body: JSON.stringify({
+          id: 10,
+          size: "M",
+          total: 2
+        })
+      })
+    );
+    expect(await screen.findByText("Producto añadido al carrito.")).toBeInTheDocument();
   });
 });

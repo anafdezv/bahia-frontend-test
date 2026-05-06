@@ -72,21 +72,21 @@ export default function PLPPage() {
   }, [products, query]);
 
   return (
-    <main className="mx-auto flex min-h-[calc(100svh-90px)] w-full max-w-[1760px] flex-col gap-8 px-7 pb-10 sm:px-8 lg:px-10">
+    <main className="mx-auto flex min-h-[calc(100svh-90px)] w-full max-w-[1440px] flex-col gap-8 px-7 pb-10 sm:px-8 lg:px-10">
       <section className="grid grid-cols-1 items-end gap-4 pt-1 lg:grid-cols-[1fr_auto]">
         <h1 className="text-[clamp(1.9rem,1.55rem+0.9vw,2.6rem)] leading-[0.98] font-extrabold tracking-[-0.03em] text-[#141414]">
-          Product List
+          Listado de productos
         </h1>
         <Input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search by reference, name or description"
-          aria-label="Search products"
+          placeholder="Buscar por referencia, nombre o descripción"
+          aria-label="Buscar productos"
           className="h-12 w-full rounded-xl border-[#d7d7d7] bg-white px-5 text-[1rem] font-medium text-[#202020] placeholder:font-medium placeholder:text-[#8b8b8b] lg:w-[560px]"
         />
       </section>
 
-      {error ? <p className="text-sm text-destructive">Error loading products: {error}</p> : null}
+      {error ? <p className="text-sm text-destructive">Error cargando productos: {error}</p> : null}
 
       {isLoading ? (
         <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
@@ -103,7 +103,7 @@ export default function PLPPage() {
       )}
 
       {!isLoading && !error && filteredProducts.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No products match your search.</p>
+        <p className="text-sm text-muted-foreground">No hay productos que coincidan con la búsqueda.</p>
       ) : null}
     </main>
   );

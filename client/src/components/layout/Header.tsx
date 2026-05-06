@@ -14,14 +14,14 @@ import {
 
 function routeLabel(pathname: string) {
   if (pathname === "/products") {
-    return "Products";
+    return "Productos";
   }
 
   if (pathname.startsWith("/products/")) {
-    return "Product detail";
+    return "Detalle de producto";
   }
 
-  return "Home";
+  return "Inicio";
 }
 
 export default function Header() {
@@ -31,7 +31,7 @@ export default function Header() {
 
   return (
     <header className="bg-white">
-      <div className="mx-auto flex w-full max-w-[1760px] flex-col gap-2 px-6 pt-5 pb-2 sm:px-8 lg:px-10">
+      <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-2 px-6 pt-5 pb-2 sm:px-8 lg:px-10">
         <div className="flex items-center justify-between gap-4">
           <Link to="/products" className="text-lg font-extrabold tracking-[-0.02em] text-[#171717]">
             Bahia Store
@@ -42,7 +42,7 @@ export default function Header() {
             className="h-10 min-w-[104px] gap-2 rounded-full border-[#222] bg-white px-4 text-sm font-semibold text-[#111] shadow-none hover:bg-[#f5f5f5]"
           >
             <ShoppingBag className="size-3.5" />
-            Cart ({count})
+            Carrito ({count})
           </Button>
         </div>
 
@@ -51,7 +51,7 @@ export default function Header() {
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
                 <Link to="/products" className="hover:text-[#1a1a1a]">
-                  Products
+                  Productos
                 </Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
