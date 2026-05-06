@@ -24,24 +24,22 @@ export function useProductDetail(id: string | undefined): UseProductDetailResult
       return;
     }
 
-    let mounted = true;
+    const controller = new AbortController();
 
     async function loadProduct() {
       try {
         setIsLoading(true);
-        const response = await getProductById(productId);
-
-        if (mounted) {
-          setProduct(response);
-          setError(null);
-        }
+        const response = await getProductById(productId, { signal: controller.signal });
+        setProduct(response);
+        setError(null);
       } catch (loadError) {
-        if (mounted) {
-          setProduct(null);
-          setError(getErrorMessage(loadError, "No se pudo cargar el producto."));
+        if (loadError instanceof DOMException && loadError.name === "AbortError") {
+          return;
         }
+        setProduct(null);
+        setError(getErrorMessage(loadError, "No se pudo cargar el producto."));
       } finally {
-        if (mounted) {
+        if (!controller.signal.aborted) {
           setIsLoading(false);
         }
       }
@@ -50,7 +48,7 @@ export function useProductDetail(id: string | undefined): UseProductDetailResult
     void loadProduct();
 
     return () => {
-      mounted = false;
+      controller.abort();
     };
   }, [id]);
 

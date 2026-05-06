@@ -13,17 +13,17 @@ cartRouter.post("/", (req, res) => {
   const parsedTotal = parsePositiveInteger(total);
 
   if (parsedId === null) {
-    res.status(400).json({ message: "Invalid id value" });
+    res.status(400).json({ code: "INVALID_CART_PRODUCT_ID", message: "Invalid id value" });
     return;
   }
 
   if (typeof size !== "string" || size.trim().length === 0) {
-    res.status(400).json({ message: "Invalid size value" });
+    res.status(400).json({ code: "INVALID_SIZE", message: "Invalid size value" });
     return;
   }
 
   if (parsedTotal === null) {
-    res.status(400).json({ message: "Invalid total value" });
+    res.status(400).json({ code: "INVALID_TOTAL", message: "Invalid total value" });
     return;
   }
 

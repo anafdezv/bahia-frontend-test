@@ -8,12 +8,13 @@ describe("api service", () => {
       ok: false,
       status: 404,
       headers: new Headers({ "content-type": "application/json" }),
-      json: async () => ({ message: "Product not found" })
+      json: async () => ({ code: "PRODUCT_NOT_FOUND", message: "Product not found" })
     } as Response);
 
     await expect(apiGet("/product/999")).rejects.toMatchObject({
       name: "ApiError",
       status: 404,
+      code: "PRODUCT_NOT_FOUND",
       message: "Product not found"
     });
   });

@@ -30,6 +30,7 @@ const mockedProducts = [
 
 describe("PLPPage", () => {
   beforeEach(() => {
+    window.localStorage.clear();
     vi.restoreAllMocks();
   });
 
@@ -68,5 +69,27 @@ describe("PLPPage", () => {
 
     expect(screen.queryByText("Basic Tee")).not.toBeInTheDocument();
     expect(screen.getByText("Denim Jacket")).toBeInTheDocument();
+  });
+
+  it("renders backend error message from typed API errors", async () => {
+    vi.spyOn(global, "fetch").mockResolvedValue({
+      ok: false,
+      status: 503,
+      headers: new Headers({ "content-type": "application/json" }),
+      json: async () => ({
+        code: "SERVICE_UNAVAILABLE",
+        message: "Servicio temporalmente no disponible"
+      })
+    } as Response);
+
+    render(
+      <MemoryRouter>
+        <PLPPage />
+      </MemoryRouter>
+    );
+
+    expect(
+      await screen.findByText("Error cargando productos: Servicio temporalmente no disponible")
+    ).toBeInTheDocument();
   });
 });

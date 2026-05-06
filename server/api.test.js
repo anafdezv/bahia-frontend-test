@@ -44,13 +44,13 @@ test("GET /api/health returns API health", async () => {
 test("GET /api/product/:id returns 404 for unknown ids", async () => {
   const response = await fetch(`${baseUrl}/api/product/999999999`);
   assert.equal(response.status, 404);
-  assert.deepEqual(await response.json(), { message: "Product not found" });
+  assert.deepEqual(await response.json(), { code: "PRODUCT_NOT_FOUND", message: "Product not found" });
 });
 
 test("GET /api/product/:id validates id format", async () => {
   const response = await fetch(`${baseUrl}/api/product/abc`);
   assert.equal(response.status, 400);
-  assert.deepEqual(await response.json(), { message: "Invalid id value" });
+  assert.deepEqual(await response.json(), { code: "INVALID_PRODUCT_ID", message: "Invalid id value" });
 });
 
 test("POST /api/cart validates payload and returns count", async () => {
@@ -60,7 +60,7 @@ test("POST /api/cart validates payload and returns count", async () => {
     body: JSON.stringify({ id: "abc", size: "", total: 0 })
   });
   assert.equal(invalidResponse.status, 400);
-  assert.deepEqual(await invalidResponse.json(), { message: "Invalid id value" });
+  assert.deepEqual(await invalidResponse.json(), { code: "INVALID_CART_PRODUCT_ID", message: "Invalid id value" });
 
   const validResponse = await fetch(`${baseUrl}/api/cart`, {
     method: "POST",
@@ -78,7 +78,7 @@ test("POST /api/cart validates size and total edge cases", async () => {
     body: JSON.stringify({ id: 10, size: " ", total: 1 })
   });
   assert.equal(invalidSizeResponse.status, 400);
-  assert.deepEqual(await invalidSizeResponse.json(), { message: "Invalid size value" });
+  assert.deepEqual(await invalidSizeResponse.json(), { code: "INVALID_SIZE", message: "Invalid size value" });
 
   const invalidTotalResponse = await fetch(`${baseUrl}/api/cart`, {
     method: "POST",
@@ -86,7 +86,7 @@ test("POST /api/cart validates size and total edge cases", async () => {
     body: JSON.stringify({ id: 10, size: "M", total: 0 })
   });
   assert.equal(invalidTotalResponse.status, 400);
-  assert.deepEqual(await invalidTotalResponse.json(), { message: "Invalid total value" });
+  assert.deepEqual(await invalidTotalResponse.json(), { code: "INVALID_TOTAL", message: "Invalid total value" });
 });
 
 test("API returns JSON response for malformed payload errors", async () => {
@@ -98,6 +98,8 @@ test("API returns JSON response for malformed payload errors", async () => {
 
   assert.equal(response.status, 400);
   assert.match(response.headers.get("content-type") ?? "", /application\/json/i);
-  const body = await response.json();
-  assert.equal(typeof body.message, "string");
+  assert.deepEqual(await response.json(), {
+    code: "INVALID_JSON",
+    message: "Invalid JSON payload"
+  });
 });

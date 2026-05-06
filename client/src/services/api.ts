@@ -1,16 +1,19 @@
 export const API_BASE = "/api";
 
 type ErrorResponseBody = {
+  code?: unknown;
   message?: unknown;
 };
 
 export class ApiError extends Error {
   status: number;
+  code: string | null;
 
-  constructor(status: number, message: string) {
+  constructor(status: number, message: string, code: string | null = null) {
     super(message);
     this.name = "ApiError";
     this.status = status;
+    this.code = code;
   }
 }
 
@@ -19,16 +22,19 @@ function isJsonResponse(response: Response) {
   return typeof contentType === "string" && contentType.includes("application/json");
 }
 
-async function parseErrorMessage(response: Response) {
+async function parseErrorBody(response: Response): Promise<{ code: string | null; message: string | null }> {
   if (!isJsonResponse(response)) {
-    return null;
+    return { code: null, message: null };
   }
 
   try {
     const payload = (await response.json()) as ErrorResponseBody;
-    return typeof payload.message === "string" && payload.message.trim().length > 0 ? payload.message : null;
+    const code = typeof payload.code === "string" && payload.code.trim().length > 0 ? payload.code : null;
+    const message = typeof payload.message === "string" && payload.message.trim().length > 0 ? payload.message : null;
+
+    return { code, message };
   } catch {
-    return null;
+    return { code: null, message: null };
   }
 }
 
@@ -37,8 +43,8 @@ async function ensureOk(response: Response) {
     return;
   }
 
-  const message = await parseErrorMessage(response);
-  throw new ApiError(response.status, message ?? `Request failed (${response.status})`);
+  const { code, message } = await parseErrorBody(response);
+  throw new ApiError(response.status, message ?? `Request failed (${response.status})`, code);
 }
 
 export function getErrorMessage(error: unknown, fallbackMessage: string) {
@@ -49,20 +55,31 @@ export function getErrorMessage(error: unknown, fallbackMessage: string) {
   return fallbackMessage;
 }
 
-export async function apiGet<T>(path: string): Promise<T> {
-  const response = await fetch(`${API_BASE}${path}`);
+type RequestOptions = {
+  signal?: AbortSignal;
+};
+
+export async function apiGet<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  const response = await fetch(`${API_BASE}${path}`, {
+    signal: options.signal
+  });
   await ensureOk(response);
 
   return response.json() as Promise<T>;
 }
 
-export async function apiPost<TResponse, TBody extends object>(path: string, body: TBody): Promise<TResponse> {
+export async function apiPost<TResponse, TBody extends object>(
+  path: string,
+  body: TBody,
+  options: RequestOptions = {}
+): Promise<TResponse> {
   const response = await fetch(`${API_BASE}${path}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
+    signal: options.signal
   });
   await ensureOk(response);
 

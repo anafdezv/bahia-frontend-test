@@ -40,22 +40,21 @@ export default function PLPPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let mounted = true;
+    const controller = new AbortController();
 
     async function loadProducts() {
       try {
         setIsLoading(true);
-        const response = await getProducts();
-        if (mounted) {
-          setProducts(response);
-          setError(null);
-        }
+        const response = await getProducts({ signal: controller.signal });
+        setProducts(response);
+        setError(null);
       } catch (loadError) {
-        if (mounted) {
-          setError(getErrorMessage(loadError, "No se pudieron cargar los productos."));
+        if (loadError instanceof DOMException && loadError.name === "AbortError") {
+          return;
         }
+        setError(getErrorMessage(loadError, "No se pudieron cargar los productos."));
       } finally {
-        if (mounted) {
+        if (!controller.signal.aborted) {
           setIsLoading(false);
         }
       }
@@ -64,7 +63,7 @@ export default function PLPPage() {
     void loadProducts();
 
     return () => {
-      mounted = false;
+      controller.abort();
     };
   }, []);
 

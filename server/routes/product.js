@@ -31,14 +31,14 @@ export function createProductRouter(repository = productsRepository) {
       const id = parseProductId(req.params.id);
 
       if (id === null) {
-        res.status(400).json({ message: "Invalid id value" });
+        res.status(400).json({ code: "INVALID_PRODUCT_ID", message: "Invalid id value" });
         return;
       }
 
       const product = await repository.getById(id);
 
       if (!product) {
-        res.status(404).json({ message: "Product not found" });
+        res.status(404).json({ code: "PRODUCT_NOT_FOUND", message: "Product not found" });
         return;
       }
 
