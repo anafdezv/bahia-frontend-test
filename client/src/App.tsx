@@ -6,7 +6,7 @@ import PLPPage from "@/pages/PLP/PLPPage";
 
 export default function App() {
   return (
-    <div className="min-h-svh bg-background text-foreground">
+    <div className="min-h-svh bg-white text-[#151515]">
       <Header />
       <Routes>
         <Route path="/" element={<Navigate to="/products" replace />} />

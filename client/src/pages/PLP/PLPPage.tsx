@@ -8,12 +8,12 @@ import type { Product } from "@/types/product";
 
 function ProductCardSkeleton() {
   return (
-    <div className="overflow-hidden rounded-xl border">
-      <Skeleton className="aspect-[3/4] w-full rounded-none" />
-      <div className="space-y-3 p-4">
-        <Skeleton className="h-4 w-2/3" />
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-1/3" />
+    <div className="overflow-hidden bg-white">
+      <Skeleton className="aspect-[3/4] w-full rounded-none bg-[#dfdfdf]" />
+      <div className="space-y-3 p-5">
+        <Skeleton className="h-4 w-7/12 bg-[#e2e2e2]" />
+        <Skeleton className="h-5 w-10/12 bg-[#e2e2e2]" />
+        <Skeleton className="h-6 w-4/12 bg-[#e2e2e2]" />
       </div>
     </div>
   );
@@ -72,28 +72,30 @@ export default function PLPPage() {
   }, [products, query]);
 
   return (
-    <main className="mx-auto flex min-h-[calc(100svh-140px)] w-full max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
-      <section className="flex flex-col gap-4">
-        <h1 className="text-2xl font-semibold tracking-tight">Product List</h1>
+    <main className="mx-auto flex min-h-[calc(100svh-90px)] w-full max-w-[1760px] flex-col gap-8 px-7 pb-10 sm:px-8 lg:px-10">
+      <section className="grid grid-cols-1 items-end gap-4 pt-1 lg:grid-cols-[1fr_auto]">
+        <h1 className="text-[clamp(1.9rem,1.55rem+0.9vw,2.6rem)] leading-[0.98] font-extrabold tracking-[-0.03em] text-[#141414]">
+          Product List
+        </h1>
         <Input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search by reference, name or description"
           aria-label="Search products"
-          className="max-w-md"
+          className="h-12 w-full rounded-xl border-[#d7d7d7] bg-white px-5 text-[1rem] font-medium text-[#202020] placeholder:font-medium placeholder:text-[#8b8b8b] lg:w-[560px]"
         />
       </section>
 
       {error ? <p className="text-sm text-destructive">Error loading products: {error}</p> : null}
 
       {isLoading ? (
-        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
           {Array.from({ length: 8 }).map((_, index) => (
             <ProductCardSkeleton key={index} />
           ))}
         </section>
       ) : (
-        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
           {filteredProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
