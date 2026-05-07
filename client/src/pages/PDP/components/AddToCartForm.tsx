@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +19,7 @@ type AddToCartFormProps = {
 
 export function AddToCartForm({ product }: AddToCartFormProps) {
   const { setCount } = useCartCount();
+  const isAddingRef = useRef(false);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedTotal, setSelectedTotal] = useState("1");
   const [isAdding, setIsAdding] = useState(false);
@@ -26,6 +27,7 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
   const [addSuccess, setAddSuccess] = useState<string | null>(null);
 
   useEffect(() => {
+    isAddingRef.current = false;
     setSelectedSize("");
     setSelectedTotal("1");
     setAddError(null);
@@ -34,12 +36,17 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
   }, [product.id]);
 
   async function handleAddToCart() {
+    if (isAddingRef.current) {
+      return;
+    }
+
     if (!selectedSize) {
       setAddError("Selecciona una talla.");
       return;
     }
 
     try {
+      isAddingRef.current = true;
       setIsAdding(true);
       setAddError(null);
       setAddSuccess(null);
@@ -55,6 +62,7 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
     } catch (submitError) {
       setAddError(getErrorMessage(submitError, "No se pudo añadir el producto."));
     } finally {
+      isAddingRef.current = false;
       setIsAdding(false);
     }
   }
