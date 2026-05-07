@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import { useCartCount } from "@/hooks/use-cart-count";
+import { useCart } from "@/hooks/use-cart";
 import { getErrorMessage } from "@/services/api";
 import { addToCart } from "@/services/cart";
 import type { Product } from "@/types/product";
@@ -18,7 +18,7 @@ type AddToCartFormProps = {
 };
 
 export function AddToCartForm({ product }: AddToCartFormProps) {
-  const { setCount } = useCartCount();
+  const { addItem } = useCart();
   const isAddingRef = useRef(false);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedTotal, setSelectedTotal] = useState("1");
@@ -57,7 +57,15 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
         total: Number(selectedTotal)
       });
 
-      setCount((currentCount) => currentCount + response.count);
+      addItem({
+        productId: product.id,
+        reference: product.reference,
+        name: product.name,
+        size: selectedSize,
+        unitPriceCents: product.price,
+        mediaUrl: product.mediaUrl,
+        quantity: response.count
+      });
       setAddSuccess("Producto añadido al carrito.");
     } catch (submitError) {
       setAddError(getErrorMessage(submitError, "No se pudo añadir el producto."));
